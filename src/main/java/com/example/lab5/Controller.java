@@ -15,27 +15,22 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.stage.FileChooser;
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class Controller {
 
     int numBooks = 250;
+    int numusers =100;
 
     ArrayList<User> users = new ArrayList<>();
     ArrayList<Book> books = new ArrayList<>();
 
     @FXML
     private TreeView<String> tree;
-
-//    @FXML
-//    private Button buttonUser;
-//
-//    public void initialize() {
-//        buttonUser.setDisable(true);
-//    }
-
 
     @FXML
     void importBook(ActionEvent event) {
@@ -56,18 +51,21 @@ public class Controller {
     }
 
     @FXML
-    void impUser(ActionEvent event) {
+    void importUser(ActionEvent event) throws IOException {
         try {
             FileChooser chooser = new FileChooser();
             File file = chooser.showOpenDialog(null);
-            CreateArr impU = new CreateArr();
-            impU.setAll(file);
-            UserFactory userFactory = new UserFactory(impU);
-            users = userFactory.createProf(books);
+            CreateArr createArr = new CreateArr();
+            createArr.setAll(file);
+            UserFactory userFactory = new UserFactory(createArr);
+            for( int i=0; i<=numusers; i++){
+                users.add(userFactory.createUser(books));
+            }
             initializeTree();
 
         } catch (Exception e) {
             error(e);
+            e.printStackTrace();
         }
     }
 
@@ -75,8 +73,8 @@ public class Controller {
 
     public void initializeTree() {
 
-        int stNum = 0;
-        int prNum = 0;
+        int studCount = 0;
+        int profCount = 0;
 
         TreeItem<String> rootItem = new TreeItem<>("Пользователи");
         rootItem.setExpanded(true);
@@ -90,10 +88,10 @@ public class Controller {
             TreeItem<String> branchItem = new TreeItem<>(user.getFullName() + " (" + user.getBooks().size() + ")");
             if (user.getClass().getName().equals("com.example.lab5.users.classes.Student")) {
                 studentItem.getChildren().add(branchItem);
-                stNum++;
+                studCount++;
             } else {
                 professorItem.getChildren().add(branchItem);
-                prNum++;
+                profCount++;
             }
 
             user.getBooks().forEach((obj) -> {
@@ -106,7 +104,7 @@ public class Controller {
                 TreeItem<String> leafLang = new TreeItem<>("Язык: " + book.getLang());
                 bookItem.getChildren().add(leafLang);
 
-                if (book.getClass().getName().equals("com.example.lab5.books.classes.eng.EngEd")) {
+                if (book.getType().equals("Educational")) {
                     EngEd b = (EngEd) book;
                     TreeItem<String> leafAuthor = new TreeItem<>("Автор: " + b.getAuthor());
                     bookItem.getChildren().add(leafAuthor);
@@ -114,11 +112,11 @@ public class Controller {
                     bookItem.getChildren().add(leafUniversity);
                     TreeItem<String> leafLvl = new TreeItem<>("Уровень: "+b.getLvl());
                     bookItem.getChildren().add(leafLvl);
-                } else if (book.getClass().getName().equals("com.example.lab5.books.classes.eng.EngFic")) {
+                } else if (book.getType().equals("Fictional")) {
                     EngFic b = (EngFic) book;
                     TreeItem<String> leafAuthor = new TreeItem<>("Автор: " + b.getAuthor());
                     bookItem.getChildren().add(leafAuthor);
-                } else if (book.getClass().getName().equals("com.example.lab5.books.classes.rus.RusFic")) {
+                } else if (book.getClass().getName().equals("Художественная")) {
                     RusFic b = (RusFic) book;
                     TreeItem<String> leafAuthor = new TreeItem<>("Автор: " + b.getAuthor());
                     bookItem.getChildren().add(leafAuthor);
@@ -127,9 +125,8 @@ public class Controller {
             });
 
         }
-
-        studentItem.setValue("Студенты (" + stNum + ")");
-        professorItem.setValue("Преподаватели (" + prNum + ")");
+        studentItem.setValue("Студенты (" + studCount + ")");
+        professorItem.setValue("Преподаватели (" + profCount + ")");
 
         tree.setRoot(rootItem);
 

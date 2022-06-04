@@ -8,6 +8,7 @@
         <outputRelativeToContentRoot value="true" />
         <module name="labs5" />
         <module name="lab5" />
+        <module name="lab5 — копия" />
       </profile>
     </annotationProcessing>
   </component>

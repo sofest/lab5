@@ -10,7 +10,7 @@ public class EngEd extends Eng {
     public EngEd(String name, String author, String university) {
         super(name, author);
         this.university = university;
-        setType("Educaional");
+        setType("Educational");
         setLvl();
     }
 

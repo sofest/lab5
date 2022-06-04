@@ -10,46 +10,40 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class BookFactory {
 
-    CreateB imp;
+    CreateB createB;
 
-    public BookFactory(CreateB imp) {
-        this.imp = imp;
+    public BookFactory(CreateB createB) {
+        this.createB = createB;
     }
 
     public Book createBook() {
         Book book;
-        int rand = ThreadLocalRandom.current().nextInt(0, 100);
-        if (rand < 25) {
-            book = createEngEd();
-        } else if (rand < 50) {
-            book = createEngFic();
-        } else if (rand < 75) {
-            book = createRusEd();
-        } else {
-            book = createRusFic();
+        int countBook = ThreadLocalRandom.current().nextInt(0, 4);
+        switch (countBook){
+            case(0): book = createEngEd(); break;
+            case(1): book = createEngFic(); break;
+            case(2): book = createRusEd(); break;
+            case(3): book = createRusFic(); break;
+            default:
+                throw new IllegalStateException("Unexpected value: " + countBook);
         }
         return book;
     }
 
     public EngEd createEngEd() {
-        return new EngEd(imp.randomB(imp.getArrEnEdNames()), imp.randomB(imp.getArrEnEdAuthors()), imp.randomB(imp.getArrEnEdUniversities()));
-    }
-    public String ficEngBuilder(){
-        StringBuilder builder = new StringBuilder();
-        builder.append(imp.randomB(imp.getArrEnFicNames())).append(imp.randomB(imp.getArrEnFicAuthors()));
-        return builder.toString();
+        return new EngEd(createB.randomB(createB.getArrEnEdNames()), createB.randomB(createB.getArrEnEdAuthors()), createB.randomB(createB.getArrEnEdUniversities()));
     }
 
     public EngFic createEngFic() {
-        return new EngFic(imp.randomB(imp.getArrEnFicNames()), imp.randomB(imp.getArrEnFicAuthors()));
+        return new EngFic(createB.randomB(createB.getArrEnFicNames()), createB.randomB(createB.getArrEnFicAuthors()));
     }
 
     public RusEd createRusEd() {
-        return new RusEd(imp.randomRusB(imp.getArrRuEdNames()));
+        return new RusEd(createB.randomRusB(createB.getArrRuEdNames()));
     }
 
     public RusFic createRusFic() {
-        return new RusFic(imp.randomB(imp.getArrRuFicNames()), imp.randomB(imp.getArrRuFicAuthors()));
+        return new RusFic(createB.randomB(createB.getArrRuFicNames()), createB.randomB(createB.getArrRuFicAuthors()));
     }
 
 }

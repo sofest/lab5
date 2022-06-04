@@ -7,6 +7,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collections;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class CreateArr {
 
@@ -52,7 +53,7 @@ public class CreateArr {
         workbook.close();
     }
 
-    public String[] read(XSSFWorkbook workbook, int num) {  //массив из данных той страницы, номер которой мы передали
+    public String[] read(XSSFWorkbook workbook, int num) {
         XSSFSheet sheet = workbook.getSheetAt(num);
         String[] arr = new String[sheet.getLastRowNum() + 1];
         for (int i = 0; i <= sheet.getLastRowNum(); i++) {
@@ -60,7 +61,6 @@ public class CreateArr {
                 arr[i] = sheet.getRow(i).getCell(0).getStringCellValue();
             }
         }
-        Collections.shuffle(Collections.singletonList(arr));
         return arr;
     }
 
@@ -118,7 +118,7 @@ public class CreateArr {
         return arrWMiddle;
     }
 
-    public String randomWSurname(String surname) {
+    public String createWSurname(String surname) {
         String wSurname = "";
         if (surname.endsWith("в") || surname.endsWith("н")) {
             wSurname = surname + "а";
@@ -129,4 +129,8 @@ public class CreateArr {
         }
         return wSurname;
 }
+    public String randomU(String[] arr) {
+        String s = arr[ThreadLocalRandom.current().nextInt(0, arr.length)];
+        return s;
+    }
 }
